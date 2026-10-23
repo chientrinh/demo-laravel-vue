@@ -26,7 +26,8 @@ services:
       - LOG_CHANNEL=stack
       - FRONTEND_URL=http://localhost:3000
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   # Database (MySQL 8)
   mysql:
@@ -44,6 +45,12 @@ services:
       - MYSQL_PASSWORD=taskflow_password
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "taskflow", "-ptaskflow_password"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
 
   # Frontend (Vue 3 SPA via Nginx) — build `frontend/` and copy dist into docker/frontend/dist
   frontend:

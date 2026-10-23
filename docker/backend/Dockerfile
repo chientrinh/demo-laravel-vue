@@ -20,15 +20,18 @@ WORKDIR /var/www/html
 # Copy composer and install dependencies
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy composer.json from project root and install
-COPY backend/composer.json /var/www/html/composer.json
+# Copy composer files and install dependencies
+COPY backend/composer.json backend/composer.lock* /var/www/html/
 
-# Install dependencies (ignore security advisories for development)
+# Install dependencies (no-scripts because artisan is not copied yet)
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-interaction --optimize-autoloader --no-dev --ignore-platform-reqs --no-audit 2>/dev/null || true
+RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
 # Copy entire Laravel project
 COPY backend/ /var/www/html
+
+# Dump optimized autoloader
+RUN composer dump-autoload --optimize
 
 # Copy PHP config (was bind-mounted; now baked into the image)
 COPY docker/backend/php.ini /usr/local/etc/php/php.ini

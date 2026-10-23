@@ -36,10 +36,10 @@ cd taskflow
 ### 1.3 Dựng toàn bộ stack
 
 ```bash
-cd docker && docker compose up -d --build
+docker compose -f docker/docker-compose.yml up -d --build
 ```
 
-Lệnh này dựng cả MySQL, backend (Apache/PHP 8.3) và frontend tĩnh (Nginx, cổng 80). Chờ vài giây để MySQL sẵn sàng.
+Lệnh này dựng cả MySQL, backend (Apache/PHP 8.3) và frontend tĩnh (Nginx, cổng 80). MySQL có healthcheck nên backend sẽ chỉ khởi động khi cơ sở dữ liệu đã sẵn sàng nhận kết nối.
 
 ### 1.4 Tạo bảng + nạp dữ liệu demo
 
@@ -47,15 +47,15 @@ Lệnh này dựng cả MySQL, backend (Apache/PHP 8.3) và frontend tĩnh (Ngin
 docker exec taskflow-backend php artisan migrate --seed
 ```
 
-Dependencies đã được cài trong image lúc build, `APP_KEY` đã có sẵn trong `docker/docker-compose.yml`; `migrate --seed` tạo **6 tài khoản demo** và dữ liệu mẫu.
+Dependencies đã được cài đặt đầy đủ trong image lúc build, `APP_KEY` đã có sẵn trong `docker/docker-compose.yml`; `migrate --seed` tạo **6 tài khoản demo** và dữ liệu mẫu.
 
 ### 1.5 Dựng frontend
 
 ```bash
-cd docker/frontend && docker compose up -d --build
+docker compose -f docker/frontend/docker-compose.yml up -d --build
 ```
 
-Frontend dev chạy tại cổng **3000**. Mạng `docker_default` phải đã tồn tại (do stack gốc ở mục 1.3 tạo).
+Frontend dev chạy tại cổng **3000**. Mạng `docker_default` đã được tạo từ stack gốc ở mục 1.3.
 
 ### 1.6 Truy cập & tài khoản demo
 
@@ -89,28 +89,28 @@ docker exec taskflow-backend php artisan migrate:status
 ### 1.8 Xem log
 
 ```bash
-cd docker && docker compose logs -f
-cd docker/frontend && docker compose logs -f
+docker compose -f docker/docker-compose.yml logs -f
+docker compose -f docker/frontend/docker-compose.yml logs -f
 ```
 
 ### 1.9 Dừng / dọn dẹp
 
 ```bash
 # Dừng frontend dev
-cd docker/frontend && docker compose down
+docker compose -f docker/frontend/docker-compose.yml down
 
 # Dừng stack gốc (mysql + backend + nginx tĩnh), giữ dữ liệu
-cd docker && docker compose down
+docker compose -f docker/docker-compose.yml down
 
 # Dừng và XÓA toàn bộ dữ liệu (cẩn thận)
-cd docker && docker compose down -v
+docker compose -f docker/docker-compose.yml down -v
 ```
 
 ### 1.10 Khắc phục sự cố thường gặp
 
 | Triệu chứng | Cách xử lý |
 | --- | --- |
-| `network docker_default not found` | Chạy `(cd docker && docker compose up -d)` trước để Compose tạo `docker_default` (không tạo thủ công) |
+| `network docker_default not found` | Chạy `docker compose -f docker/docker-compose.yml up -d` trước để Compose tạo `docker_default` (không tạo thủ công) |
 | Cổng 3000/8080/80 đã bị chiếm | `docker ps` tìm và dừng tiến trình cũ, hoặc đổi cổng trong compose |
 | Backend báo lỗi kết nối DB | Kiểm tra `DB_HOST=mysql` trong `docker/docker-compose.yml` (service `backend`) |
 | Frontend báo lỗi CORS | Đảm bảo `VITE_API_PROXY_TARGET` trỏ đúng backend container |
