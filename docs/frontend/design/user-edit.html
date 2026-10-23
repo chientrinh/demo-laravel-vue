@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" style="">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="web_dashboard" name="shell-type">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Public+Sans:wght@400;500;600&amp;display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet">
+    <style>
+        @layer base {
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                overscroll-behavior: none;
+            }
+
+            main>:first-child {
+                margin-top: 0 !important;
+            }
+
+            main>:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-high": "#f0e3ff", "surface-tint": "#6f34e1", "on-error": "#ffffff", "error-container": "#ffdad6", "tertiary": "#006290", "outline": "#7b7486", "on-primary-fixed-variant": "#5602c9", "on-primary": "#ffffff", "primary-container": "#8650f8", "background": "#fef7ff", "surface-container": "#f4eaff", "inverse-primary": "#d0bcff", "surface-bright": "#fef7ff", "on-surface": "#1f182e", "surface-container-low": "#f9f1ff", "surface-container-lowest": "#ffffff", "secondary": "#5b5f64", "on-surface-variant": "#4a4455", "on-error-container": "#93000a", "surface": "#fef7ff", "secondary-fixed": "#e0e2e9", "outline-variant": "#cbc3d8", "primary": "#6c31de", "on-tertiary": "#ffffff", "on-tertiary-fixed-variant": "#004b70", "tertiary-fixed-dim": "#8dcdff", "primary-fixed": "#e9ddff", "on-tertiary-fixed": "#001e30", "on-secondary-fixed-variant": "#44474c", "secondary-fixed-dim": "#c4c6cd", "primary-fixed-dim": "#d0bcff", "on-primary-fixed": "#23005c", "on-tertiary-container": "#fcfcff", "on-secondary": "#ffffff", "tertiary-container": "#007bb5", "on-primary-container": "#fffbff", "tertiary-fixed": "#cae6ff", "surface-dim": "#e2d5f3", "on-secondary-container": "#61646a", "on-secondary-fixed": "#181c21", "surface-variant": "#eaddfc", "secondary-container": "#e0e2e9", "inverse-on-surface": "#f7edff", "inverse-surface": "#352c44", "error": "#ba1a1a", "surface-container-highest": "#eaddfc", "on-background": "#1f182e" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter-lg": "1.5rem", "margin-lg": "2rem", "space-sm": "0.5rem", "gutter": "1.5rem", "margin-sm": "1rem", "space-xs": "0.25rem", "space-md": "1rem", "space-xl": "1.5rem", "space-lg": "1.25rem", "margin": "1.5rem", "gutter-sm": "1rem" }, "fontFamily": { "title-h5": ["Inter"], "headline-h2": ["Inter"], "caption": ["Public Sans"], "subtitle-2": ["Inter"], "body-2": ["Inter"], "button": ["Public Sans"], "title-h6": ["Inter"], "headline-h4": ["Inter"], "headline-lg-mobile": ["Inter"], "body-1": ["Inter"], "subtitle-1": ["Inter"], "display-h1": ["Inter"], "overline": ["Public Sans"], "headline-h3": ["Inter"] }, "fontSize": { "title-h5": ["18px", { "lineHeight": "28px", "fontWeight": "500" }], "headline-h2": ["38px", { "lineHeight": "56px", "fontWeight": "500" }], "caption": ["13px", { "lineHeight": "18px", "letterSpacing": "0.4px", "fontWeight": "400" }], "subtitle-2": ["13px", { "lineHeight": "20px", "fontWeight": "500" }], "body-2": ["13px", { "lineHeight": "20px", "fontWeight": "400" }], "button": ["15px", { "lineHeight": "22px", "fontWeight": "500" }], "title-h6": ["15px", { "lineHeight": "22px", "fontWeight": "600" }], "headline-h4": ["24px", { "lineHeight": "38px", "fontWeight": "500" }], "headline-lg-mobile": ["30px", { "lineHeight": "40px", "fontWeight": "500" }], "body-1": ["15px", { "lineHeight": "22px", "fontWeight": "400" }], "subtitle-1": ["15px", { "lineHeight": "22px", "fontWeight": "400" }], "display-h1": ["46px", { "lineHeight": "68px", "fontWeight": "500" }], "overline": ["12px", { "lineHeight": "14px", "letterSpacing": "0.8px", "fontWeight": "500" }], "headline-h3": ["28px", { "lineHeight": "42px", "fontWeight": "500" }] } } } }</script>
+</head>
+
+<body class="bg-background font-body-1 text-on-surface antialiased">
+    <aside
+        class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest z-50 flex flex-col shadow-[0_1px_8px_rgba(46,38,61,0.06)]">
+        <div class="h-16 px-space-lg flex items-center gap-space-sm">
+            <div
+                class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-[0_2px_6px_rgba(108,49,222,0.4)]">
+                <span class="material-symbols-outlined text-[22px]">shield</span></div>
+            <div class="flex flex-col"><span
+                    class="font-title-h6 text-title-h6 tracking-tight text-on-surface">Materio</span><span
+                    class="font-overline text-overline uppercase tracking-widest text-primary">Task Manager</span></div>
+        </div>
+        <div class="flex-1 overflow-y-auto px-space-md py-space-sm flex flex-col gap-space-xs">
+            <nav class="flex flex-col gap-space-xs"
+                data-active-classes="bg-primary text-on-primary rounded-lg font-subtitle-2 text-subtitle-2 shadow-[0_2px_6px_rgba(108,49,222,0.4)]">
+                <div
+                    class="px-space-md pt-space-md pb-space-xs font-overline text-overline uppercase tracking-wider text-outline">
+                    GENERAL</div><a
+                    class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="dashboard" href="#">Dashboard</a>
+                <div
+                    class="px-space-md pt-space-lg pb-space-xs font-overline text-overline uppercase tracking-wider text-outline">
+                    TASK MANAGEMENT</div><a
+                    class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="all-tasks" href="#">All Tasks</a><a
+                    class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="create-task" href="#">Create Task</a><a
+                    class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="my-tasks" href="#">My Tasks</a>
+                <div
+                    class="px-space-md pt-space-lg pb-space-xs font-overline text-overline uppercase tracking-wider text-outline">
+                    USER MANAGEMENT</div><a
+                    class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="users" href="#"><span class="">Users</span><span
+                        class="px-space-sm py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-caption text-caption uppercase">ADMIN</span></a><a
+                    class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="create-user" href="#">Create User</a><a aria-current="page"
+                    class="flex items-center px-space-md py-space-sm transition-all bg-primary text-on-primary rounded-lg font-subtitle-2 text-subtitle-2 shadow-[0_2px_6px_rgba(108,49,222,0.4)]"
+                    data-path="edit-user" href="#">Edit User &amp; Permissions</a>
+                <div
+                    class="px-space-md pt-space-lg pb-space-xs font-overline text-overline uppercase tracking-wider text-outline">
+                    ACCOUNT</div><a
+                    class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="my-profile" href="#">My Profile</a><a
+                    class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-all font-subtitle-2 text-subtitle-2"
+                    data-path="logout" href="#">Logout</a>
+            </nav>
+        </div>
+    </aside>
+    <div class="pl-64">
+        <header
+            class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(46,38,61,0.04)] z-40 px-space-lg flex items-center justify-between">
+            <div class="flex items-center gap-space-md flex-1 max-w-md">
+                <div
+                    class="w-full flex items-center gap-space-sm px-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-[20px]">search</span><span
+                        class="font-body-2 text-body-2 flex-1">Search tasks, members...</span><kbd
+                        class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline font-caption text-caption shadow-[0_1px_4px_rgba(46,38,61,0.06)]">⌘K</kbd>
+                </div>
+            </div>
+            <div class="flex items-center gap-space-md">
+                <div
+                    class="flex items-center gap-1.5 px-space-md py-1 rounded-full bg-primary-fixed text-on-primary-fixed">
+                    <span class="material-symbols-outlined text-[16px]">verified_user</span><span
+                        class="font-caption text-caption font-semibold">Admin Role</span></div><button
+                    class="relative w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span
+                        class="material-symbols-outlined text-[22px]">notifications</span><span
+                        class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span></button>
+                <div class="relative flex items-center gap-space-sm pl-space-xs">
+                    <div class="relative">
+                        <div
+                            class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-subtitle-2 text-subtitle-2 shadow-[0_2px_6px_rgba(108,49,222,0.3)]">
+                            <span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span
+                            class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#4DB600] ring-2 ring-surface-container-lowest"></span>
+                    </div>
+                    <div class="hidden md:flex flex-col text-left"><span
+                            class="font-title-h6 text-title-h6 text-on-surface leading-tight">Alex Morgan</span><span
+                            class="font-caption text-caption text-outline leading-none">Tech Lead</span></div><span
+                        class="material-symbols-outlined text-outline text-[18px]">expand_more</span>
+                </div>
+            </div>
+        </header>
+        <main class="w-full pt-16 bg-background min-h-screen">
+            <div class="flex flex-col w-full">
+                <div class="px-space-lg py-space-md max-w-[1440px] mx-auto w-full space-y-space-lg">
+                    <!-- Breadcrumb & Top Bar -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+                        <div class="flex flex-col gap-1">
+                            <nav class="flex items-center gap-1.5 text-on-surface-variant font-caption text-caption">
+                                <a class="hover:text-primary transition-colors" href="#">Dashboard</a>
+                                <span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+                                <a class="hover:text-primary transition-colors" href="#">Users</a>
+                                <span class="material-symbols-outlined text-[14px] text-outline">chevron_right</span>
+                                <span class="text-on-surface font-medium">Edit User</span>
+                            </nav>
+                            <div class="flex flex-wrap items-center gap-space-sm mt-1">
+                                <h1
+                                    class="font-headline-4 text-headline-4 text-on-surface tracking-tight font-semibold">
+                                    Edit User</h1>
+                                <span
+                                    class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-semibold text-[12px] tracking-wide">#204</span>
+                            </div>
+                            <p class="font-caption text-caption text-outline">Update account credentials and user role
+                                privileges</p>
+                        </div>
+                        <div class="flex items-center gap-space-sm self-start md:self-auto">
+                            <button
+                                class="px-space-md py-2 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container transition-all font-button text-button shadow-sm"
+                                type="button">Cancel</button>
+                            <button
+                                class="px-space-md py-2 rounded-lg bg-error-container/40 text-error hover:bg-error-container hover:text-on-error-container transition-all font-button text-button flex items-center gap-1.5"
+                                type="button"><span class="material-symbols-outlined text-[18px]">delete</span>Delete
+                                User</button>
+                            <button
+                                class="px-space-lg py-2 rounded-lg bg-primary hover:bg-primary-container text-on-primary transition-all font-button text-button flex items-center gap-1.5 shadow-[0_2px_8px_rgba(108,49,222,0.35)]"
+                                type="button"><span class="material-symbols-outlined text-[18px]">save</span>Save
+                                Changes</button>
+                        </div>
+                    </div>
+                    <!-- Navigation Tabs -->
+
+                    <!-- Main Content Layout: Grid -->
+                    <div
+                        class="bg-surface-container-lowest rounded-xl p-space-lg shadow-[0_4px_10px_rgba(46,38,61,0.06)] w-full">
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between pb-space-sm border-0">
+                                <div class="flex items-center gap-2">
+                                    <span
+                                        class="material-symbols-outlined text-primary text-[22px]">manage_accounts</span>
+                                    <h2 class="font-title-h5 text-title-h5 text-on-surface font-semibold">User Details
+                                    </h2>
+                                </div>
+                                <span
+                                    class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-semibold text-[12px]">ID:
+                                    #204</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="space-y-1">
+                                    <label class="block font-subtitle-2 text-subtitle-2 text-on-surface-variant">User
+                                        ID</label>
+                                    <div class="relative flex items-center">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 text-outline text-[18px]">tag</span>
+                                        <input
+                                            class="w-full pl-10 pr-3 py-2.5 rounded-lg bg-surface-container-low text-secondary font-body-2 text-body-2 cursor-not-allowed"
+                                            disabled="" type="text" value="#204">
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label
+                                        class="block font-subtitle-2 text-subtitle-2 text-on-surface-variant">Name</label>
+                                    <div class="relative flex items-center">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 text-outline text-[18px]">person</span>
+                                        <input
+                                            class="w-full pl-10 pr-3 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-body-2 text-body-2 shadow-sm focus:outline-none focus:bg-surface-container-lowest transition-all"
+                                            type="text" value="Sarah Chen">
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="block font-subtitle-2 text-subtitle-2 text-on-surface-variant">Email
+                                        Address</label>
+                                    <div class="relative flex items-center">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 text-outline text-[18px]">mail</span>
+                                        <input
+                                            class="w-full pl-10 pr-3 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-body-2 text-body-2 shadow-sm focus:outline-none transition-all"
+                                            type="email" value="sarah.chen@materio.io">
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <label
+                                        class="block font-subtitle-2 text-subtitle-2 text-on-surface-variant">Password</label>
+                                    <div class="relative flex items-center">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 text-outline text-[18px]">lock</span>
+                                        <input
+                                            class="w-full pl-10 pr-10 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-body-2 text-body-2 shadow-sm focus:outline-none transition-all"
+                                            placeholder="••••••••••••" type="password">
+                                        <button
+                                            class="material-symbols-outlined absolute right-3 text-outline text-[18px] hover:text-on-surface cursor-pointer"
+                                            type="button">visibility</button>
+                                    </div>
+                                    <p class="font-caption text-caption text-outline">Leave blank to keep current
+                                        password</p>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="block font-subtitle-2 text-subtitle-2 text-on-surface-variant">Role</label>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+                                        <label
+                                            class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high/30 cursor-pointer transition-colors">
+                                            <input checked="" class="w-4 h-4 text-primary accent-primary cursor-pointer"
+                                                name="user_role" type="radio" value="Admin">
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-subtitle-2 text-subtitle-2 text-on-surface font-semibold">Admin</span>
+                                                <span class="font-caption text-caption text-outline">Full workspace
+                                                    management</span>
+                                            </div>
+                                        </label>
+                                        <label
+                                            class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high/30 cursor-pointer transition-colors">
+                                            <input class="w-4 h-4 text-primary accent-primary cursor-pointer"
+                                                name="user_role" type="radio" value="User">
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-subtitle-2 text-subtitle-2 text-on-surface font-semibold">User</span>
+                                                <span class="font-caption text-caption text-outline">Standard member
+                                                    access</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="pt-2 border-0">
+                                    <div
+                                        class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-surface-container-low text-outline font-caption text-caption">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined text-[16px]">schedule</span>
+                                            <span class="">Created: Oct 12, 2024</span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined text-[16px]">update</span>
+                                            <span class="">Updated: Oct 20, 2024</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Floating / Sticky Footer Actions Strip -->
+
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

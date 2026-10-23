@@ -1,0 +1,29 @@
+services:
+  frontend-dev:
+    build:
+      context: ../..
+      dockerfile: docker/frontend/Dockerfile
+      target: dev
+    container_name: taskflow-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../frontend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      HOST: "0.0.0.0"
+      PORT: 3000
+      CHOKIDAR_USEPOLLING: "true"
+      VITE_USE_MOCK: "false"
+      VITE_API_BASE_URL: "/api"
+      VITE_API_PROXY_TARGET: "http://backend:80"
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+    networks:
+      - taskflow
+
+networks:
+  taskflow:
+    external: true
+    name: docker_default
