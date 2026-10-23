@@ -35,22 +35,28 @@ function clearStoredSession(): void {
 
 function redirectToLogin() {
   if (typeof window !== "undefined") {
-    if (!window.location.pathname.includes("/login")) {
-      window.location.href = "/login";
+    if (!window.location.pathname.startsWith("/auth/login")) {
+      const redirect = window.location.pathname + window.location.search;
+      window.location.href = `/auth/login?redirect=${encodeURIComponent(redirect)}`;
     }
   }
 }
 
-// ── Response interceptor: clear the session and return to /login on 401 ─────
+// ── Response interceptor: clear the session and return to /auth/login on 401 ─────
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ErrorEnvelope>) => {
     const status = error.response?.status ?? 0;
     const envelope = error.response?.data;
+    const isMeRequest = Boolean(error.config?.url?.includes("/me"));
 
     if (status === 401) {
       clearStoredSession();
-      redirectToLogin();
+      // Router guards handle initial session check for /me cleanly.
+      // For all other requests, redirect to login preserving current location.
+      if (!isMeRequest) {
+        redirectToLogin();
+      }
     }
 
     // Chuẩn hóa mọi lỗi khác thành ApiError

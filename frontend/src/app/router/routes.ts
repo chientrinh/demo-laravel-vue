@@ -8,6 +8,14 @@ export const routes: RouteRecordRaw[] = [
     redirect: { name: 'tasks' },
   },
   {
+    path: '/login',
+    redirect: { name: 'login' },
+  },
+  {
+    path: '/register',
+    redirect: { name: 'register' },
+  },
+  {
     path: '/auth',
     component: BlankLayout,
     meta: { guestOnly: true },
