@@ -52,7 +52,7 @@ Dependencies are already baked into the container image during build, and `APP_K
 ### 1.5 Start Frontend Development Server
 
 ```bash
-docker compose -f docker/frontend/docker-compose.yml up -d --build
+docker compose -f docker/frontend/docker-compose.yml up -d --build --force-recreate
 ```
 
 The frontend dev server runs on port **3000**. The `docker_default` network is already created by the core stack in step 1.3.
@@ -112,6 +112,7 @@ docker compose -f docker/docker-compose.yml down -v
 | --- | --- |
 | `network docker_default not found` | Run `docker compose -f docker/docker-compose.yml up -d` first to allow Compose to create `docker_default` (do not create manually) |
 | Port 3000/8080/80 already in use | Run `docker ps` to find and stop conflicting processes, or adjust ports in the compose files |
+| `error mounting ... docker-desktop-bind-mounts ... no such file` | Stale WSL2 bind mount. Run `docker rm -f taskflow-frontend-dev` then rerun step 1.5 with `--force-recreate` |
 | Backend database connection error | Verify `DB_HOST=mysql` and `DB_CONNECTION=mysql` in `docker/docker-compose.yml` (service `backend`) |
 | Frontend CORS error | Ensure `VITE_API_PROXY_TARGET` correctly points to the backend container |
 | Initial build takes longer | Normal behavior — Docker image installs PHP/Node dependencies; subsequent builds will use cache |
