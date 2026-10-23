@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  # Backend (Laravel 11 + PHP 8.3 + Apache)
+  # Backend (Laravel 11 + PHP 8.3 + Apache) — source & vendor are baked into the image
   backend:
     build:
       context: ..
@@ -11,14 +9,22 @@ services:
     ports:
       - "8080:80"
     environment:
+      - APP_NAME=TaskFlow
+      - APP_ENV=local
+      - "APP_KEY=base64:pvSvOxcHz5Lmh+DoboSgP93K1pq40DH1Hnd8RifcpRU="
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8080
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_DATABASE=taskflow
       - DB_USERNAME=taskflow
       - DB_PASSWORD=taskflow_password
-    volumes:
-      - ../backend/:/var/www/html
-      - ./backend/php.ini:/usr/local/etc/php/php.ini
+      - SESSION_DRIVER=database
+      - SESSION_SECURE_COOKIE=false
+      - QUEUE_CONNECTION=database
+      - CACHE_STORE=database
+      - LOG_CHANNEL=stack
+      - FRONTEND_URL=http://localhost:3000
     depends_on:
       - mysql
 
@@ -39,7 +45,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
-# Frontend (Vue 3 SPA via Nginx)
+  # Frontend (Vue 3 SPA via Nginx) — build `frontend/` and copy dist into docker/frontend/dist
   frontend:
     image: nginx:alpine
     container_name: taskflow-frontend

@@ -30,8 +30,8 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev --ignore-pl
 # Copy entire Laravel project
 COPY backend/ /var/www/html
 
-# Copy public directory explicitly (ensures it's included)
-COPY backend/public/ /var/www/html/backend/public
+# Copy PHP config (was bind-mounted; now baked into the image)
+COPY docker/backend/php.ini /usr/local/etc/php/php.ini
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

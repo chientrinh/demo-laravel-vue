@@ -4,21 +4,21 @@ This directory contains the documentation for the Vue 3 single‑page applicat
 
 ## Quick start for contributors
 
-The development frontend runs inside Docker on port 3000 and proxies `/api` to the backend container.
+The development frontend runs inside Docker on port 3000 and proxies `/api` and `/sanctum` (the Sanctum CSRF cookie endpoint) to the backend container.
 
 ```bash
 # From the repository root
 docker compose -f docker/frontend/docker-compose.yml up -d --build
 ```
 
-The app is available at <http://localhost:3000>. It uses the environment variable `VITE_API_BASE_URL` (default `http://backend:8000`) to reach the Laravel API; set `VITE_USE_MOCK=false` in `frontend/.env` to call the real backend instead of the localStorage mock.
+The app is available at <http://localhost:3000>. The browser reaches the API through the Vite proxy: `VITE_API_BASE_URL` defaults to `/api`, and the proxy target is set with `VITE_API_PROXY_TARGET` (default `http://backend:8000`). Set `VITE_USE_MOCK=false` in `frontend/.env` to call the real backend instead of the localStorage mock.
 
 If you need to run the frontend on the host (e.g. for host‑side Vite debugging):
 
 ```bash
 cd frontend
 npm ci          # install dependencies
-npm run dev     # Vite dev server, defaults to http://backend:8000
+npm run dev     # Vite dev server; /api and /sanctum proxy to http://backend:8000 by default
 # To override the proxy target:
 VITE_API_PROXY_TARGET=http://localhost:8080 npm run dev
 ```
@@ -62,15 +62,15 @@ All API errors follow the shape defined in the Laravel backend (`bootstrap/app.p
 {
   "status_code": 422,
   "code": "VALIDATION_ERROR",
-  "message": "The given data was invalid.",
-  "errors": [{ "field": "title", "message": "The title field is required." }],
-  "details": [],
-  "path": "/api/tasks",
+  "message": "The title field is required.",
+  "errors": { "title": ["The title field is required."] },
+  "details": { "title": ["The title field is required."] },
+  "path": "api/tasks",
   "timestamp": "2026-..."
 }
 ```
 
-The frontend `HttpClient` reads `statusCode` from the response to display error toasts; the underlying Axios response object also carries the HTTP status in `response.status`.
+The backend envelope uses `status_code`; the frontend `HttpClient` reads `statusCode` and falls back to the Axios HTTP status (`response.status`) when it is absent, so the correct status is still surfaced.
 
 ## Known issues
 
@@ -82,7 +82,7 @@ The frontend `HttpClient` reads `statusCode` from the response to display error 
 
 ## Links
 
-- [Backend API overview](https://example.com/docs/backend/api/overview.md) – full contract, pagination, error envelope.
+- [Backend API overview](../docs/backend/api/overview.md) – full contract, pagination, error envelope.
 - [Architecture decisions](architecture-decisions.md) – key choices and current status.
 - [CONTEXT.md](../CONTEXT.md) – canonical domain glossary.
 - [AGENTS.md](../AGENTS.md) – entrypoint and documentation routing.
