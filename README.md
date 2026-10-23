@@ -2,7 +2,12 @@
 
 TaskFlow is a full-stack team task management demo: a Laravel 11 JSON API, a Vue 3 single-page application, and MySQL 8, orchestrated with Docker Compose.
 
-<a href="https://www.youtube.com/watch?v=LsNcbQzMs8s" target="_blank">https://www.youtube.com/watch?v=LsNcbQzMs8s</a>
+---
+
+## 📹 DEMO VIDEO
+
+<a href="https://www.youtube.com/watch?v=k6dDd_ZZZ5k" target="_blank">https://www.youtube.com/watch?v=k6dDd_ZZZ5k</a>
+
 
 ---
 
