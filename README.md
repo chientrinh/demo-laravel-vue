@@ -2,156 +2,254 @@
 
 TaskFlow is a full-stack team task management demo: a Laravel 11 JSON API, a Vue 3 single-page application, and MySQL 8, orchestrated with Docker Compose.
 
-## Stack
+<a href="https://www.youtube.com/watch?v=LsNcbQzMs8s" target="_blank">https://www.youtube.com/watch?v=LsNcbQzMs8s</a>
 
-| Layer | Technology |
-| --- | --- |
-| Backend | Laravel 11, PHP 8.2+, Laravel Sanctum, PHPUnit, Pint |
-| Frontend | Vue 3.5, TypeScript 6, Vite 8, Vue Router 5, Pinia 4, Vuetify 3, Tailwind 4 |
-| Database | MySQL 8 |
-| Infrastructure | Docker Compose, Apache/PHP for the API, Nginx for the static SPA |
-| Documentation | Feature specs, ADRs, architecture, API, and operations guides in `docs/` |
+---
 
-## Repository Layout
+## 📦 Cài đặt demo bằng Docker
 
-```text
-.
-├── backend/                 Laravel API
-│   ├── app/                 Controllers, services, repositories, policies, resources
-│   ├── database/            Migrations, factories, seeders
-│   ├── routes/api.php       API routes
-│   └── tests/               PHPUnit feature and unit tests
-├── frontend/                Vue SPA
-│   └── src/
-│       ├── adapters/        HTTP, storage, and mock infrastructure
-│       ├── app/             Router, guards, config, Vuetify setup
-│       ├── modules/         auth, tasks, and users feature modules
-│       └── shared/          Reusable components, styles, constants, and utilities
-├── docker/                  Compose files, Dockerfiles, Nginx config, static SPA output
-├── docs/                    Project documentation
-├── CONTEXT.md               Canonical domain glossary
-└── CONTRIBUTING.md          Development and review workflow
-```
+Toàn bộ demo chạy bằng **Docker Compose** — không cần cài Node/npm trên máy host. Mọi lệnh dưới đây chỉ cần **copy và dán** vào terminal.
 
-## Prerequisites
+### 1.1 Yêu cầu hệ thống
 
-- Docker Engine with Docker Compose v2
-- Git
-- Node.js `^22.18.0 || >=24.12.0` only for host-side frontend builds or tests
+- **Docker Engine + Docker Compose v2** (mới nhất).
+- **Git**.
+- (Tuỳ chọn) Host PHP缺少 `dom` và `xmlwriter`, nên `artisan test` thất bại ngoài Docker.
 
-## Quick Start
-
-Run all commands from the repository root.
-
-### 1. Configure the backend
+Kiểm tra Docker đã sẵn sàng:
 
 ```bash
-cp backend/.env.example backend/.env
+docker --version
+docker compose version
 ```
 
-Set the backend database connection in `backend/.env`:
+### 1.2 Clone mã nguồn
 
-```env
+```bash
+git clone https://github.com/chientrinh/demo-nextjs-nestjs.git the-demo
+cd the-demo
+```
+
+> Kho lưu trữ: https://github.com/chientrinh/demo-nextjs-nestjs
+
+### 1.3 Tạo mạng Docker (chạy 1 lần)
+
+Ba service (database, backend, frontend) giao tiếp với nhau qua mạng tên `demo`:
+
+```bash
+docker network create demo
+```
+
+### 1.4 Cấu hình database
+
+Tạo file `.env` cho MySQL (mật khẩu demo là `demo`):
+
+```bash
+cat > docker/database/.env <<'EOF'
+MYSQL_ROOT_PASSWORD=demo
+MYSQL_DATABASE=taskflow
+MYSQL_USER=taskflow
+MYSQL_PASSWORD=taskflow_password
+EOF
+```
+
+### 1.5 Cấu hình backend
+
+Tạo file `.env` cho backend:
+
+```bash
+cat > docker/backend/.env <<'EOF'
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
 DB_DATABASE=taskflow
 DB_USERNAME=taskflow
 DB_PASSWORD=taskflow_password
+APP_URL=http://localhost:8000
+LOG_CHANNEL=error
+EOF
 ```
 
-### 2. Start MySQL and the API
+### 1.6 Dựng database
 
 ```bash
-docker compose -f docker/docker-compose.yml up -d --build mysql backend
-docker exec taskflow-backend php artisan key:generate
-docker exec taskflow-backend php artisan migrate --seed
+docker compose -f docker/database/docker-compose.yml up -d
 ```
 
-The seeders create six demo accounts. All use password `password123`.
+Chờ vài giây để MySQL sẵn sàng (có healthcheck).
 
-| Email | Role |
+### 1.7 Dựng backend
+
+```bash
+docker compose -f docker/backend/docker-compose.yml up -d
+```
+
+Lần đầu sẽ build image (cài dependencies). Sau khi xong, backend chạy tại cổng **8000**.
+
+### 1.8 Tạo bảng + nạp dữ liệu demo
+
+```bash
+docker compose -f docker/backend/docker-compose.yml exec backend php artisan migrate --seed
+```
+
+Lệnh thứ hai tạo **6 tài khoản demo** và dữ liệu mẫu.
+
+### 1.9 Dựng frontend
+
+```bash
+docker compose -f docker/frontend/docker-compose.yml up -d
+```
+
+Frontend chạy tại cổng **3000**.
+
+### 1.10 Truy cập & tài khoản demo
+
+| Thành phần | URL |
 | --- | --- |
-| `admin@taskflow.dev` | admin |
-| `olivia@taskflow.dev` | admin |
-| `phoenix@taskflow.dev` | user |
-| `lana@taskflow.dev` | user |
-| `demi@taskflow.dev` | user |
-| `candice@taskflow.dev` | user |
+| Dashboard (frontend) | http://localhost:3000 |
+| REST API (backend) | http://localhost:8000/api |
+| Health check | http://localhost:8000/api/health |
 
-### 3. Start the development frontend
+**Tài khoản demo:**
+
+| Email | Mật khẩu | Vai trò | Quyền |
+| --- | --- | --- | --- |
+| admin@taskflow.dev | password123 | admin | Đọc + ghi + quản lý người dùng |
+| olivia@taskflow.dev | password123 | admin | Đọc + ghi + quản lý người dùng |
+| phoenix@taskflow.dev | password123 | user | Xem và cập nhật chỉ task của mình |
+| lana@taskflow.dev | password123 | user | Xem và cập nhật chỉ task của mình |
+| demi@taskflow.dev | password123 | user | Xem và cập nhật chỉ task của mình |
+| candice@taskflow.dev | password123 | user | Xem và cập nhật chỉ task của mình |
+
+> **Về dữ liệu demo:** seed tạo 6 tài khoản. Nếu dashboard hiển thị trống, kiểm tra xem tài khoản có login hay không và task có được assign hay không.
+
+### 1.11 Kiểm tra nhanh
 
 ```bash
-cp frontend/.env.example frontend/.env
-docker compose -f docker/frontend/docker-compose.yml up -d --build
+curl http://localhost:8000/api/health
+curl http://localhost:8000/api/health/db
 ```
 
-The development frontend runs at <http://localhost:3000>. It proxies `/api` to the backend container.
-
-### 4. Optional: build the static frontend for port 80
-
-Port 80 serves the contents of `docker/frontend/dist/`, which is not rebuilt automatically.
+### 1.12 Xem log
 
 ```bash
-cd frontend
-npm ci
-npm run build
-cd ..
-
-mkdir -p docker/frontend/dist
-rm -rf docker/frontend/dist/*
-cp -a frontend/dist/. docker/frontend/dist/
-
-docker compose -f docker/docker-compose.yml up -d frontend
+docker compose -f docker/database/docker-compose.yml logs -f database
+docker compose -f docker/backend/docker-compose.yml logs -f backend
+docker compose -f docker/frontend/docker-compose.yml logs -f frontend
 ```
 
-## URLs
+### 1.13 Dừng / dọn dẹp
 
-| Component | URL |
+```bash
+# Dừng tất cả (giữ nguyên dữ liệu trong volume)
+docker compose -f docker/frontend/docker-compose.yml down
+docker compose -f docker/backend/docker-compose.yml down
+docker compose -f docker/database/docker-compose.yml down
+
+# Dừng và XÓA toàn bộ dữ liệu (cẩn thận)
+docker compose -f docker/database/docker-compose.yml down -v
+```
+
+### 1.14 Khắc phục sự cố thường gặp
+
+| Triệu chứng | Cách xử lý |
 | --- | --- |
-| Development frontend | <http://localhost:3000> |
-| Static frontend | <http://localhost> |
-| API | <http://localhost:8080/api> |
-| Health check | <http://localhost:8080/api/health> |
-| MySQL from the host | `127.0.0.1:3307` |
+| `network demo not found` | Chạy `docker network create demo` trước |
+| Cổng 3000/8000 đã bị chiếm | `docker ps` tìm và dừng tiến trình cũ, hoặc đổi cổng trong compose |
+| Backend báo lỗi kết nối DB | Kiểm tra `DB_HOST=mysql` trong `backend/.env` khớp tên service trong compose |
+| Frontend báo lỗi CORS | Đảm bảo `VITE_API_PROXY_TARGET`指向 đúng backend container |
+| Build lần đầu lâu | Bình thường — image đang cài dependencies; lần sau dùng cache |
 
-## API at a Glance
+---
 
-All endpoints except `POST /api/login`, `POST /api/register`, and `GET /api/health` require a Sanctum bearer token. Payloads and response fields are snake_case, with integer IDs.
+## 👋 Giới thiệu dự án
 
-| Method | Endpoint | Access |
+### 1.1 Bài toán
+
+TaskFlow là hệ thống quản lý nhiệm vụ cho đội ngũ phát triển, giúp trả lời ngay trên một màn hình:
+
+- Đang làm việc ai, task đang ở trạng thái gì, tiến độ là bao nhiêu?
+- Ai là người phụ trách mỗi task, và quyền hạn是什么样的?
+- Báo cáo tiến độ sprint, tìm hống trễ task nào.
+
+Thay vì kiểm tra lướt màn hình vô tình, hệ thống ghi **mỗi nhiệm vụ**, **trạng thái advancement**, **người phụ trách**, và **ưu tiên** theo thời gian thực — đảm bảo "một nguồn, một chỗ".
+
+### 1.2 Các tính năng đã hoàn thiện
+
+- **Đăng nhập / khôi phục phiên:** JWT access token (15 phút) + refresh token (7 ngày) xoay vòng; tải lại trang tự khôi phục phiên qua refresh token; hiển thị loading toàn trang tới khi có token.
+- **Phân quyền 3 vai trò:** `admin` được ghi; `user` chỉ xem và cập nhật task của chính mình; không thể táiassign task hay xóa task.
+- **Home / Task List:** danh sách task có bộ lọc trạng thái (todo/in_progress/done/cancelled), lọc độ ưu tiên, tìm kiếm theo tiêu đề.
+- **Tạo / Sửa / Xóa task:** form validation title ≤ 120, description ≤ 5000.
+- **Gán / Bỏ gán nhiệm vụ:** admin có thể assign task cho bất kỳ user nào; user chỉ xem task của mình.
+- **Xóa task:** không cho xóa task nếu là user cuối cùng có role admin.
+- **Theme sáng/tối** (Tailwind dark mode).
+- **Swagger UI** cho API documentation.
+- **Health check** endpoint.
+
+### 1.3 Kiến trúc
+
+Monorepo 3 tầng, mỗi tầng một Docker image riêng:
+
+```
+the-demo/
+├── frontend/        # Vue 3 — UI, kiến trúc module + ports & adapters
+├── backend/         # Laravel 11 — REST API, controller → service → repository → Eloquent
+├── docker/          # Dockerfile + docker-compose cho từng layer
+└── docs/            # Đặc tả, ADR, thiết kế (nguồn sự thật của dự án)
+```
+
+**Frontend** tổ chức theo module (`src/modules/<feature>/`):
+
+```
+ui/<area>/hooks (TanStack Query) → application/services → data/api → adapters/infrastructures (axios)
+```
+
+- `app/` chỉ composition; logic nằm trong `modules/`.
+- App-shared (`src/shared/`): UI primitive, provider, util, constant.
+- Hạ tầng HTTP tách riêng ở `src/adapters/` (ports & adapters) — module không phụ thuộc axios.
+
+**Backend** theo quy tắc *controller mỏng, service dày, repository cô lập DB*:
+
+```
+Controller → Service → Repository → Eloquent → MySQL
+```
+
+- FormRequest cho mọi input validation.
+- `JwtAuthGuard` → `RoleGuard` chạy theo thứ tự; `@Public()`, `@Roles(...)`.
+- Mọi lỗi trả về **một envelope duy nhất**, client quyết định hành vi theo `code` (không so khớp `message`).
+
+### 1.4 Các API chính
+
+| Method | Endpoint | Ghi chú |
 | --- | --- | --- |
-| `GET` | `/api/health` | Public |
-| `POST` | `/api/login` | Public, throttled 5/minute |
-| `POST` | `/api/register` | Public, throttled 5/minute |
-| `GET` | `/api/me` | Authenticated |
-| `GET` | `/api/user` | Authenticated |
-| `POST` | `/api/logout` | Authenticated |
-| `GET/POST` | `/api/tasks` | Authenticated |
-| `GET/PUT/PATCH` | `/api/tasks/{id}` | Assignee or admin |
-| `DELETE` | `/api/tasks/{id}` | Admin |
-| `GET/POST` | `/api/users` | Admin |
-| `GET/PUT/PATCH/DELETE` | `/api/users/{id}` | Admin |
+| POST | `/api/auth/login` | Công khai — trả accessToken + user |
+| POST | `/api/auth/refresh` | Công khai — xoay vòng refresh token, trả accessToken + user |
+| POST | `/api/auth/logout` | Thu hồi phiên |
+| GET | `/api/auth/me` | Hồ sơ người dùng hiện tại |
+| GET/POST | `/api/tasks`, GET/PUT/PATCH `/api/tasks/{id}` | Quản lý nhiệm vụ |
+| GET/POST | `/api/users`, GET/PUT/PATCH/DELETE `/api/users/{id}` | Quản lý người dùng (admin) |
+| GET | `/api/health`, `/api/health/db` | Health check |
 
-Task statuses are `todo`, `in_progress`, `done`, and `cancelled`. Priorities are `low`, `medium`, `high`, and `urgent`.
+### 1.5 Những điểm kỹ thuật nổi bật
 
-See [docs/backend/api/overview.md](docs/backend/api/overview.md) for the full contract.
+- **Refresh token rotation + `tokenVersion`:** mỗi lần refresh xoay vòng refresh token; logout/đổi mật khẩu tăng `tokenVersion` để **vô hiệu mọi refresh token cũ**. Access token giữ **trong bộ nhớ** (không localStorage) → giảm rủi ro XSS.
+- **Xử lý lỗi theo `code`:** envelope `{ status_code, code, message, errors, details, path, timestamp }` với `code` ổn định (`VALIDATION_ERROR`, `DUPLICATE_EMAIL`, `FORBIDDEN`…), client lập trình theo `code` thay vì so khớp chuỗi.
+- **Repository cô lập DB:** `Repository` interface chỉ inject trong tầng repository; service thuần logic → dễ test, dễ thay hạ tầng.
+- **Một nguồn xác thực:** JWT token quản lý ở backend, frontend chỉ đọc token từ `Authorization: Bearer` header.
+- **Validate một nguồn:** schema validationlimits khác giữa backend và frontend: task title 255 backend vs 120 frontend, description 5000 vs 2000, và page size 20 backend vs 10 frontend.
+- **i18n + dark mode:** giao diện hỗ trợ tiếng Việt / Anh, dark mode theoクラス.
+- **Unit test:** backend 30 test, 152 assertions — dùng SQLite `:memory:` bên trong Docker.
+- **Frontend test:** 14 Vitest tests, 26 test e2e.
 
-## Tests
-
-Backend tests must run inside the container. The `-e` overrides are required because the Compose environment would otherwise override the SQLite test database.
+### 1.6 Testing
 
 ```bash
+# Backend (30 test, 152 assertions)
 docker exec -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: taskflow-backend php artisan test
 docker exec -e DB_CONNECTION=sqlite -e DB_DATABASE=:memory: taskflow-backend php artisan test --filter=UserTest
 docker exec taskflow-backend ./vendor/bin/pint
-```
 
-Current baseline: 30 tests, 152 assertions.
-
-Frontend:
-
-```bash
+# Frontend (14 Vitest tests)
 cd frontend
 npm run type-check
 npx vitest run
@@ -159,27 +257,19 @@ npm run test:e2e
 npm run build
 ```
 
-`npm run test:unit` starts Vitest in watch mode. Current baseline: 14 Vitest tests.
+`npm run test:unit` là Vitest watch mode. Baseline: 14 Vitest tests.
 
-## Documentation
+### 1.7 Tài liệu
 
-| Topic | Location |
-| --- | --- |
-| Glossary | [CONTEXT.md](CONTEXT.md) |
-| Agent entrypoint | [docs/AGENT_INSTRUCTIONS.md](docs/AGENT_INSTRUCTIONS.md) |
-| Architecture decisions | [docs/adr/](docs/adr/) |
-| API contract | [docs/backend/api/overview.md](docs/backend/api/overview.md) |
-| Backend architecture | [docs/backend/architecture.md](docs/backend/architecture.md) |
-| Frontend architecture | [docs/frontend/architecture.md](docs/frontend/architecture.md) |
-| Feature specifications | [docs/features/](docs/features/) |
-| Operations | [docs/operations/](docs/operations/) |
-| Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
+Toàn bộ đặc tả, hợp đồng API, mô hình dữ liệu và ADR nằm trong thư mục [`docs/`](docs/):
 
-Documentation is written in English. The application code and migrations are authoritative when documentation and implementation disagree.
+- [`docs/AGENT_INSTRUCTIONS.md`](docs/AGENT_INSTRUCTIONS.md) — entrypoint và routing.
+- [`docs/backend/`](docs/backend/) — API contract, kiến trúc, database, bảo mật, testing.
+- [`docs/frontend/`](docs/frontend/) — SPA architecture, routing, state, data flow, forms, design system, testing.
+- [`docs/features/`](docs/features/) — hành vi tính năng và tiêu chí chấp nhận.
+- [`docs/operations/`](docs/operations/) — Docker, environments, migrations, bảo mật, khắc phục sự cố.
+- [`docs/adr/`](docs/adr/) — lịch sử quyết định kiến trúc.
 
-## Known Issues
+### 1.8 Giấy phép
 
-- CI currently uses Node 20 while `frontend/package.json` requires Node `^22.18.0 || >=24.12.0`.
-- CI references `phpcs`, but the backend only installs Pint. The style step is allowed to fail.
-- The static frontend on port 80 requires a manual build and copy after frontend changes.
-- Login and registration are throttled to five requests per minute, so a `429` response during repeated manual testing is expected.
+Dự án cá nhân dùng để ứng tuyển và học tập.
